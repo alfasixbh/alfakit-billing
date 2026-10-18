@@ -1,0 +1,92 @@
+{
+  "name": "alfasix/alfakit-billing",
+  "description": "Subscription billing for AlfaKit panels: Stripe (Laravel Cashier), Paddle (Cashier Paddle) and Laravel Spark providers, a plans page and subscription middleware, for tenants or users.",
+  "keywords": [
+    "laravel",
+    "alfakit",
+    "billing",
+    "subscriptions",
+    "stripe",
+    "cashier",
+    "paddle",
+    "spark"
+  ],
+  "homepage": "https://alfakit.dev/docs/plugins/billing",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Alfa Six",
+      "homepage": "https://alfasixbh.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/alfasixbh/alfakit/issues",
+    "source": "https://github.com/alfasixbh/alfakit"
+  },
+  "require": {
+    "php": "^8.3",
+    "alfasix/alfakit": "^0.1|@dev"
+  },
+  "suggest": {
+    "laravel/cashier": "For the StripeBillingProvider (Stripe, ^15.0|^16.0).",
+    "laravel/cashier-paddle": "For the PaddleBillingProvider (Paddle Billing).",
+    "laravel/spark-stripe": "For the SparkBillingProvider (paid, https://spark.laravel.com)."
+  },
+  "autoload": {
+    "psr-4": {
+      "AlfaSix\\AlfakitBilling\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AlfaSix\\AlfakitBilling\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AlfaSix\\AlfakitBilling\\BillingServiceProvider"
+      ]
+    },
+    "alfakit": {
+      "version": "^0.1",
+      "frontend": null,
+      "showcase": {
+        "demoPath": "billing/plans",
+        "tour": [
+          "Open Settings > Billing > Plans",
+          "Compare monthly plans and the trial",
+          "Start checkout from a plan card"
+        ],
+        "clips": [
+          "react-light",
+          "react-dark",
+          "vue-light",
+          "vue-dark",
+          "svelte-light",
+          "svelte-dark"
+        ],
+        "worksWith": [
+          "teams",
+          "shield",
+          "invoices"
+        ],
+        "highlights": [
+          "Stripe, Paddle and Spark providers",
+          "Plans page with trials and highlights",
+          "Billing portal link",
+          "Subscription middleware",
+          "Bill tenants or users",
+          "Works without the plugin for custom flows"
+        ]
+      }
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
