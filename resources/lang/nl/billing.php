@@ -46,4 +46,9 @@ return [
         'plan_without_price' => 'Het abonnement [:plan] heeft geen prijs. Stel er een in met Plan::make(\':plan\')->price(\'…\').',
         'portal_unavailable' => 'Het factureringsportaal van :provider kon niet worden geopend.',
     ],
+    'unavailable' => [
+        'title' => 'Betalen is op dit moment niet mogelijk',
+        'body' => 'Probeer het later opnieuw.',
+        'hint' => 'Het verzoek aan :provider is mislukt. Controleer de :provider-sleutels in .env en de prijs-ID\'s van het abonnement; de fout staat in het log.',
+    ],
 ];

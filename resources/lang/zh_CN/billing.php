@@ -46,4 +46,9 @@ return [
         'plan_without_price' => '账单方案 [:plan] 没有价格。请使用 Plan::make(\':plan\')->price(\'…\') 设置价格。',
         'portal_unavailable' => '无法打开 :provider 账单门户。',
     ],
+    'unavailable' => [
+        'title' => '暂时无法付款',
+        'body' => '请稍后再试。',
+        'hint' => ':provider 请求失败。请检查 .env 中的 :provider 密钥和套餐的价格 ID；错误已记录到日志。',
+    ],
 ];

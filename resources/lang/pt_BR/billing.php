@@ -46,4 +46,9 @@ return [
         'plan_without_price' => 'O plano de faturamento [:plan] não tem preço. Defina um com Plan::make(\':plan\')->price(\'…\').',
         'portal_unavailable' => 'Não foi possível abrir o portal de faturamento do :provider.',
     ],
+    'unavailable' => [
+        'title' => 'Os pagamentos não estão disponíveis no momento',
+        'body' => 'Tente novamente mais tarde.',
+        'hint' => 'A solicitação ao :provider falhou. Verifique as chaves do :provider no .env e os IDs de preço do plano; o erro está no log.',
+    ],
 ];

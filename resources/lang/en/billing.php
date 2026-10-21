@@ -46,4 +46,9 @@ return [
         'plan_without_price' => 'The billing plan [:plan] has no price. Set one with Plan::make(\':plan\')->price(\'…\').',
         'portal_unavailable' => 'The :provider billing portal could not be opened.',
     ],
+    'unavailable' => [
+        'title' => 'Payments aren\'t available right now',
+        'body' => 'Please try again later.',
+        'hint' => 'The :provider request failed. Check the :provider keys in .env and the plan\'s price ids; the error is in the log.',
+    ],
 ];

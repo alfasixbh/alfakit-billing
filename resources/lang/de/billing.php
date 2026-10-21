@@ -46,4 +46,9 @@ return [
         'plan_without_price' => 'Der Tarif [:plan] hat keinen Preis. Legen Sie einen mit Plan::make(\':plan\')->price(\'…\') fest.',
         'portal_unavailable' => 'Das Abrechnungsportal von :provider konnte nicht geöffnet werden.',
     ],
+    'unavailable' => [
+        'title' => 'Zahlungen sind gerade nicht verfügbar',
+        'body' => 'Bitte versuchen Sie es später erneut.',
+        'hint' => 'Die Anfrage an :provider ist fehlgeschlagen. Prüfen Sie die :provider-Schlüssel in .env und die Preis-IDs des Plans; der Fehler steht im Log.',
+    ],
 ];

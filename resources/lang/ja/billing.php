@@ -46,4 +46,9 @@ return [
         'plan_without_price' => '請求プラン [:plan] に価格がありません。Plan::make(\':plan\')->price(\'…\') で設定してください。',
         'portal_unavailable' => ':provider の請求ポータルを開けませんでした。',
     ],
+    'unavailable' => [
+        'title' => '現在お支払いはご利用いただけません',
+        'body' => 'しばらくしてからもう一度お試しください。',
+        'hint' => ':provider へのリクエストに失敗しました。.env の :provider のキーとプランの価格 ID を確認してください。エラーはログに記録されています。',
+    ],
 ];

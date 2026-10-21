@@ -46,4 +46,9 @@ return [
         'plan_without_price' => 'L’offre de facturation [:plan] n’a pas de prix. Définissez-en un avec Plan::make(\':plan\')->price(\'…\').',
         'portal_unavailable' => 'Le portail de facturation :provider n’a pas pu être ouvert.',
     ],
+    'unavailable' => [
+        'title' => 'Les paiements ne sont pas disponibles pour le moment',
+        'body' => 'Réessayez plus tard.',
+        'hint' => 'La requête vers :provider a échoué. Vérifiez les clés :provider dans .env et les identifiants de prix de l\'offre ; l\'erreur est dans le journal.',
+    ],
 ];

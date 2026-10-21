@@ -87,6 +87,20 @@ it('starts a Stripe Checkout for the user', function (): void {
         ->and($test->stripe->find('/v1/checkout/sessions')['params']['line_items'])->toBe([['price' => 'price_pro', 'quantity' => 1]]);
 });
 
+it('sends the user back to the plans with a message when the provider fails (no Stripe keys)', function (): void {
+    $user = userBillingPanel();
+    $test = TestCase::current();
+    config(['cashier.secret' => null, 'cashier.key' => null]);
+    Illuminate\Support\Facades\Exceptions::fake();
+
+    // Stripe answers "No API key provided": no error page, the plans page with a notice.
+    $test->get('/account/billing?plan=pro')->assertRedirect('http://localhost/account/billing/plans');
+
+    Illuminate\Support\Facades\Exceptions::assertReported(Stripe\Exception\AuthenticationException::class);
+    expect(json_encode(session()->all()))->toContain("Payments aren't available right now")
+        ->and($user->refresh()->subscriptions()->count())->toBe(0);
+});
+
 it('adds a Billing entry after the configured user menu items', function (): void {
     subscribeUser(userBillingPanel());
     $test = TestCase::current();

@@ -46,4 +46,9 @@ return [
         'plan_without_price' => '[:plan] faturalandırma planının fiyatı yok. Plan::make(\':plan\')->price(\'…\') ile bir fiyat belirleyin.',
         'portal_unavailable' => ':provider faturalandırma portalı açılamadı.',
     ],
+    'unavailable' => [
+        'title' => 'Ödemeler şu anda kullanılamıyor',
+        'body' => 'Lütfen daha sonra tekrar deneyin.',
+        'hint' => ':provider isteği başarısız oldu. .env içindeki :provider anahtarlarını ve planın fiyat kimliklerini kontrol edin; hata günlükte.',
+    ],
 ];
