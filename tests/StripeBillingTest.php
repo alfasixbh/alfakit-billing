@@ -125,6 +125,36 @@ it('renders the plans page for unsubscribed tenants', function (): void {
         ->not()->toContain('You have an active subscription');
 });
 
+it('renders the plan and billing portal actions as buttons', function (): void {
+    stripeBillingPanel();
+
+    $find = function (array $content, string $prefix): array {
+        $found = [];
+        $walk = function ($node) use (&$walk, &$found, $prefix): void {
+            if (! is_array($node)) {
+                return;
+            }
+            if (($node['type'] ?? null) === 'Action' && str_starts_with((string) ($node['name'] ?? ''), $prefix)) {
+                $found[] = $node;
+            }
+            foreach ($node as $child) {
+                $walk($child);
+            }
+        };
+        $walk($content);
+
+        return $found;
+    };
+
+    $plans = $find(TestCase::current()->inertiaProps('/stripe/beta/billing/plans')['page']['content'], 'subscribe');
+    $portal = $find(TestCase::current()->inertiaProps('/stripe/alpha/billing/plans')['page']['content'], 'manageBilling');
+
+    expect($plans)->not()->toBeEmpty()
+        ->and(array_column($plans, 'variant'))->each->toBe('button')
+        ->and($portal)->toHaveCount(1)
+        ->and($portal[0]['variant'])->toBe('button');
+});
+
 it('shows subscribed tenants a link to the billing portal on the plans page', function (): void {
     stripeBillingPanel();
 

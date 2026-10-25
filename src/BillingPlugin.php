@@ -133,7 +133,19 @@ class BillingPlugin implements Plugin
             ->tenantBillingProvider($this->provider)
             ->requiresTenantSubscription(fn (): bool => $this->isSubscriptionRequired())
             // Panels without tenancy: the user is billed (the middleware no-ops on tenancy panels).
-            ->authMiddleware([RedirectIfNotSubscribed::class.':'.RedirectIfNotSubscribed::USER]);
+            ->authMiddleware([RedirectIfNotSubscribed::class.':'.RedirectIfNotSubscribed::USER])
+            // Starter kits: the middleware above refuses the dashboard widgets' requests of a
+            // user who must subscribe first, so don't offer them the widgets.
+            ->hideStarterKitDashboardWhen(function () use ($panel): bool {
+                if ($panel->hasTenancy() || ! $this->isSubscriptionRequired()) {
+                    return false;
+                }
+
+                $provider = AbstractBillingProvider::forPanel($panel);
+                $billable = $provider?->getBillable($panel);
+
+                return $provider !== null && $billable !== null && ! $provider->isSubscribed($billable);
+            });
     }
 
     public function boot(Panel $panel): void

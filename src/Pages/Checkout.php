@@ -105,6 +105,7 @@ class Checkout extends Page
                     Action::make('manageBilling')
                         ->label(__('alfakit-billing::billing.checkout.manage'))
                         ->icon('credit-card')
+                        ->button()
                         ->url($provider->getBillingUrl($panel)),
                 ]);
         }
@@ -148,6 +149,8 @@ class Checkout extends Page
             $section->footerActions([
                 Action::make('subscribe'.Str::studly(Str::slug($plan->getId(), '_')))
                     ->label($trialDays !== null ? __('alfakit-billing::billing.checkout.start_trial') : __('alfakit-billing::billing.checkout.subscribe'))
+                    // A button, not the default link style: gray links read as plain text in a section footer.
+                    ->button()
                     ->color($plan->isHighlighted() ? 'primary' : 'gray')
                     ->url($provider->getBillingUrl($panel, ['plan' => $plan->getId()])),
             ]);
