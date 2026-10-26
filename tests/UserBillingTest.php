@@ -18,7 +18,7 @@ uses(TestCase::class);
 /**
  * A panel without tenancy where the signed-in user is billed.
  */
-function userBillingPanel(?Closure $plugin = null): BillableUser
+function userBillingPanel(?Closure $plugin = null, ?Closure $panel = null): BillableUser
 {
     Cashier::useCustomerModel(BillableUser::class);
 
@@ -30,12 +30,14 @@ function userBillingPanel(?Closure $plugin = null): BillableUser
         $plugin($billing);
     }
 
-    Panels::register('account', fn (Panel $panel): Panel => $panel
+    $configure = $panel;
+
+    Panels::register('account', fn (Panel $panel): Panel => ($configure ?? fn (Panel $panel): Panel => $panel)($panel
         ->login()
         ->profile()
         ->userMenuItems([Action::make('docs')->label('Docs')->url('https://example.com/docs')])
         ->pages([Dashboard::class])
-        ->plugin($billing));
+        ->plugin($billing)));
 
     $user = BillableUser::query()->create(['name' => 'Ada', 'email' => 'ada'.uniqid().'@example.com', 'password' => 'secret']);
     TestCase::current()->actingAs($user);
@@ -65,6 +67,16 @@ it('keeps the account pages reachable without a subscription', function (): void
     userBillingPanel();
 
     TestCase::current()->inertiaGet('/account/profile')->assertOk();
+});
+
+it('keeps the account-level endpoints of the header working without a subscription', function (): void {
+    userBillingPanel(panel: fn (Panel $panel): Panel => $panel->databaseNotifications());
+    $test = TestCase::current();
+
+    // The header components (the bell, the language switcher, a starter kit's header data) call
+    // these on every page, the plans page included; a redirect to the plans page broke them.
+    $test->getJson('/account/_alfakit/notifications')->assertOk();
+    $test->get('/account')->assertRedirect('http://localhost/account/billing/plans');
 });
 
 it('lets subscribed users through and opens their billing portal', function (): void {

@@ -53,6 +53,18 @@ class RedirectIfNotSubscribed
             if (! $plugin instanceof BillingPlugin || ! $plugin->isSubscriptionRequired()) {
                 return true;
             }
+
+            // The account-level endpoints behind the header components (the starter kit's data
+            // endpoint, notifications, the language switcher) serve every page, the plans page
+            // and the app's own pages too, so a redirect would break them for unsubscribed users.
+            // Endpoints that read records keep the gate (their context token names a gated page).
+            if ($request->routeIs(
+                $panel->generateRouteName('internal.starter-kit'),
+                $panel->generateRouteName('internal.notifications*'),
+                $panel->generateRouteName('internal.locale'),
+            )) {
+                return true;
+            }
         }
 
         // The pages where a billable subscribes, and the account pages, stay reachable.
