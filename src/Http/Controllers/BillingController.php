@@ -6,6 +6,7 @@ namespace AlfaSix\AlfakitBilling\Http\Controllers;
 
 use AlfaSix\Alfakit\Notifications\Notification;
 use AlfaSix\Alfakit\Panel;
+use AlfaSix\AlfakitBilling\BillingPlugin;
 use AlfaSix\AlfakitBilling\Exceptions\BillingPackageMissing;
 use AlfaSix\AlfakitBilling\Providers\AbstractBillingProvider;
 use Illuminate\Http\Request;
@@ -27,6 +28,8 @@ class BillingController
         $provider = AbstractBillingProvider::forPanel($panel);
 
         abort_if($provider === null, 404);
+        // `BillingPlugin::authorize()`: e.g. only the team's owner manages its subscription.
+        abort_unless(BillingPlugin::get($panel)->isAuthorized($panel), 403);
 
         $provider->ensureInstalled();
 

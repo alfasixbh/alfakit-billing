@@ -39,6 +39,7 @@ $panel->plugin(
 - `/{tenant}/billing` (or `/billing`) opens the Stripe Billing Portal for subscribers and the plans page for everyone else; `?plan=pro` starts Stripe Checkout.
 - A **Billing** entry is added to the tenant menu (or the user menu without tenancy).
 - `requiresSubscription()` sends unsubscribed tenants or users to the plans page.
+- `authorize(fn (User $user, ?Team $tenant): bool => …)` says who may manage billing (every tenant member by default).
 
 `PaddleBillingProvider` (needs `laravel/cashier-paddle`; it requires Guzzle 7, which Laravel 13 supports) and `SparkBillingProvider` (needs Laravel Spark) work the same way and throw a clear exception until their package is installed.
 

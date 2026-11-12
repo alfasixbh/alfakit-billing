@@ -141,3 +141,26 @@ it('uses the configured Spark path and billable type', function (): void {
 
     expect(SparkBillingProvider::make()->getPortalUrl($user))->toBe('http://localhost/billing');
 });
+
+it('limits billing to the users BillingPlugin::authorize() allows', function (): void {
+    PaddleBillingProvider::useCashierClass(FakePaddleCashier::class);
+    $provider = PaddleBillingProvider::make()->plans([Plan::make('pro')->price('pri_pro')->label('Pro')]);
+    fakeBillingPanel('paddle', $provider);
+    $test = TestCase::current();
+    $allowed = false;
+
+    BillingPlugin::get(alfakit()->getPanel('paddle'))
+        ->authorize(function ($user, $tenant) use (&$allowed): bool {
+            expect($tenant)->not->toBeNull();
+
+            return $allowed;
+        });
+
+    $test->get('/paddle/beta/billing')->assertForbidden();
+    $test->get('/paddle/beta/billing?plan=pro')->assertForbidden();
+    $test->inertiaGet('/paddle/beta/billing/plans')->assertForbidden();
+
+    $allowed = true;
+
+    $test->inertiaGet('/paddle/beta/billing/plans')->assertOk();
+});

@@ -14,6 +14,7 @@ use AlfaSix\Alfakit\Schemas\Components\Section;
 use AlfaSix\Alfakit\Schemas\Components\Text;
 use AlfaSix\Alfakit\Schemas\Components\UnorderedList;
 use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\AlfakitBilling\BillingPlugin;
 use AlfaSix\AlfakitBilling\Http\Controllers\BillingController;
 use AlfaSix\AlfakitBilling\Plan;
 use AlfaSix\AlfakitBilling\Providers\AbstractBillingProvider;
@@ -56,6 +57,9 @@ class Checkout extends Page
 
     public function mount(mixed ...$parameters): void
     {
+        // `BillingPlugin::authorize()`: e.g. only the team's owner picks a plan.
+        abort_unless(BillingPlugin::get($this->getPanel())->isAuthorized($this->getPanel()), 403);
+
         $provider = $this->getProvider();
 
         // Providers with their own plan picker (Spark) don't use this page.

@@ -42,6 +42,8 @@ class BillingPlugin implements Plugin
 
     protected bool|Closure $hasUserMenuItem = true;
 
+    protected bool|Closure|null $authorizeUsing = null;
+
     /** @var array<string, true> Panels whose user menu already has the billing entry. */
     protected array $userMenuPanels = [];
 
@@ -96,6 +98,33 @@ class BillingPlugin implements Plugin
     }
 
     /**
+     * Who may open the billing portal, the plans page and a checkout
+     * (`fn (User $user, ?Model $tenant): bool`, e.g. the team's owner). Without it every
+     * user of the panel (every member of the tenant) may.
+     */
+    public function authorize(bool|Closure|null $callback = true): static
+    {
+        $this->authorizeUsing = $callback;
+
+        return $this;
+    }
+
+    public function isAuthorized(?Panel $panel = null): bool
+    {
+        if ($this->authorizeUsing === null) {
+            return true;
+        }
+
+        if (! $this->authorizeUsing instanceof Closure) {
+            return $this->authorizeUsing;
+        }
+
+        $user = ($panel ?? alfakit()->getCurrentOrDefaultPanel())->auth()->user();
+
+        return $user !== null && (bool) app()->call($this->authorizeUsing, ['user' => $user, 'tenant' => alfakit()->getTenant()]);
+    }
+
+    /**
      * Use your own plans page (a subclass of `Checkout`).
      *
      * @param  class-string<Checkout>  $page
@@ -131,6 +160,7 @@ class BillingPlugin implements Plugin
             ->pages([$this->checkoutPage])
             // Tenancy panels: the tenant is billed (no-ops on panels without tenancy).
             ->tenantBillingProvider($this->provider)
+            ->authorizeTenantBilling(fn (): bool => $this->isAuthorized($panel))
             ->requiresTenantSubscription(fn (): bool => $this->isSubscriptionRequired())
             // Panels without tenancy: the user is billed (the middleware no-ops on tenancy panels).
             ->authMiddleware([RedirectIfNotSubscribed::class.':'.RedirectIfNotSubscribed::USER])
